@@ -19,6 +19,7 @@ pub const CONTROL_FIELD_CONTENT_TYPE: u32 = 0x01;
 pub struct EncoderWriter<W: Write> {
     writer: Option<W>,
     content_type: Option<String>,
+    partial: bool,
     started: bool,
 }
 
@@ -41,6 +42,7 @@ impl<W: Write> EncoderWriter<W> {
         EncoderWriter {
             writer: Some(writer),
             content_type: content_type,
+            partial: false,
             started: false,
         }
     }
@@ -101,10 +103,15 @@ impl<W: Write> EncoderWriter<W> {
 
     fn write_frame(&mut self, frame: &[u8]) -> io::Result<usize> {
         let len = frame.len();
-        let len_u32 = [len as u8, (len >> 8) as u8, (len >> 16) as u8, (len >> 24) as u8];
-        try!(self.writer.as_mut().unwrap().write_all(&len_u32));
-        try!(self.writer.as_mut().unwrap().write_all(frame));
-        Ok(len)
+        let len_u32 = [(len >> 24) as u8, (len >> 16) as u8, (len >> 8) as u8, len as u8];
+        if !self.partial {
+            try!(self.writer.as_mut().unwrap().write_all(&len_u32));
+        }
+        let wlen = try!(self.writer.as_mut().unwrap().write(frame));
+        if wlen < len {
+            self.partial = true;
+        }
+        Ok(wlen)
     }
 }
 
