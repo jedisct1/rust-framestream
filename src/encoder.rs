@@ -100,9 +100,7 @@ impl<W: Write> EncoderWriter<W> {
             try!(self.writer.as_mut().unwrap().write_all(&len_u32));
         }
         let wlen = try!(self.writer.as_mut().unwrap().write(frame));
-        if wlen < len {
-            self.partial = true;
-        }
+        self.partial = wlen < len;
         Ok(wlen)
     }
 }
