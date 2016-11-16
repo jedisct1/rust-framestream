@@ -44,7 +44,6 @@ impl<W: Write> EncoderWriter<W> {
             try!(self.write_control_stop());
             self.started = false;
         }
-        try!(self.write_control_stop());
         Ok(self.writer.take().unwrap())
     }
 
