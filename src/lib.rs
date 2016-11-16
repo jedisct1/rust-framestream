@@ -16,6 +16,7 @@ pub const CONTROL_READY: u32 = 0x04;
 pub const CONTROL_FINISH: u32 = 0x05;
 pub const CONTROL_FIELD_CONTENT_TYPE: u32 = 0x01;
 
+#[derive(Clone, Debug)]
 pub struct EncoderWriter<W: Write> {
     writer: Option<W>,
     content_type: Option<String>,
