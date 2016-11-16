@@ -94,8 +94,8 @@ impl<W: Write> EncoderWriter<W> {
 
     fn write_frame(&mut self, frame: &[u8]) -> io::Result<usize> {
         let len = frame.len();
-        let len_u32 = [(len >> 24) as u8, (len >> 16) as u8, (len >> 8) as u8, len as u8];
         if !self.partial {
+            let len_u32 = [(len >> 24) as u8, (len >> 16) as u8, (len >> 8) as u8, len as u8];
             try!(self.writer.as_mut().unwrap().write_all(&len_u32));
         }
         let wlen = try!(self.writer.as_mut().unwrap().write(frame));
