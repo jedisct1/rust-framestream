@@ -8,7 +8,7 @@ homepage = "https://github.com/jedisct1/rust-framestream"
 repository = "https://github.com/jedisct1/rust-framestream"
 
 [dependencies]
-byteorder = "*"
+byteorder = "~1.0"
 bytes = { git="https://github.com/carllerche/bytes" }
 clippy = {version = "*", optional = true}
 

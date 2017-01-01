@@ -1,5 +1,4 @@
 use byteorder::*;
-use bytes::BufMut;
 use ::constants::*;
 use std::io::{self, Write};
 use std::mem;
@@ -67,12 +66,12 @@ impl<W: Write> EncoderWriter<W> {
             total_len += content_type.as_bytes().len();
         }
         let mut buf = Vec::with_capacity(total_len);
-        buf.put_u32::<BigEndian>(0);                        // Escape
-        buf.put_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
-        buf.put_u32::<BigEndian>(CONTROL_START);            // Control type
+        let _ = buf.write_u32::<BigEndian>(0);                        // Escape
+        let _ = buf.write_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
+        let _ = buf.write_u32::<BigEndian>(CONTROL_START);            // Control type
         if let Some(ref content_type) = self.content_type {
-            buf.put_u32::<BigEndian>(CONTROL_FIELD_CONTENT_TYPE);
-            buf.put_u32::<BigEndian>(content_type.as_bytes().len() as u32);
+            let _ = buf.write_u32::<BigEndian>(CONTROL_FIELD_CONTENT_TYPE);
+            let _ = buf.write_u32::<BigEndian>(content_type.as_bytes().len() as u32);
             let _ = buf.write(content_type.as_bytes());
         }
         try!(self.writer.as_mut().unwrap().write_all(&buf));
@@ -82,9 +81,9 @@ impl<W: Write> EncoderWriter<W> {
     fn write_control_stop(&mut self) -> io::Result<()> {
         let total_len = 3 * 4;
         let mut buf = Vec::with_capacity(total_len);
-        buf.put_u32::<BigEndian>(0);                        // Escape
-        buf.put_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
-        buf.put_u32::<BigEndian>(CONTROL_STOP);             // Control type
+        let _ = buf.write_u32::<BigEndian>(0);                        // Escape
+        let _ = buf.write_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
+        let _ = buf.write_u32::<BigEndian>(CONTROL_STOP);             // Control type
         try!(self.writer.as_mut().unwrap().write_all(&buf));
         Ok(())
     }
