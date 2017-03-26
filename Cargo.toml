@@ -1,6 +1,6 @@
 [package]
 name = "framestream"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Frank Denis <github@pureftpd.org>"]
 description = "Frame Streams implementation in Rust"
 license = "ISC"
@@ -8,9 +8,9 @@ homepage = "https://github.com/jedisct1/rust-framestream"
 repository = "https://github.com/jedisct1/rust-framestream"
 
 [dependencies]
-byteorder = "~1.0"
-bytes = { git="https://github.com/carllerche/bytes" }
-clippy = {version = "*", optional = true}
+clippy = {version = "~0", optional = true}
+byteorder = "^1.0.0"
+bytes = "^0.4.1"
 
 [profile.release]
 lto = true
