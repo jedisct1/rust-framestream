@@ -21,10 +21,7 @@ impl<W: Write> Write for EncoderWriter<W> {
     }
 
     fn flush(&mut self) -> io::Result<()> {
-        self.writer
-            .as_mut()
-            .unwrap()
-            .flush()
+        self.writer.as_mut().unwrap().flush()
     }
 }
 
@@ -77,10 +74,7 @@ impl<W: Write> EncoderWriter<W> {
             let _ = buf.write_u32::<BigEndian>(content_type.as_bytes().len() as u32);
             let _ = buf.write(content_type.as_bytes());
         }
-        try!(self.writer
-                 .as_mut()
-                 .unwrap()
-                 .write_all(&buf));
+        try!(self.writer.as_mut().unwrap().write_all(&buf));
         Ok(())
     }
 
@@ -90,26 +84,22 @@ impl<W: Write> EncoderWriter<W> {
         let _ = buf.write_u32::<BigEndian>(0); // Escape
         let _ = buf.write_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
         let _ = buf.write_u32::<BigEndian>(CONTROL_STOP); // Control type
-        try!(self.writer
-                 .as_mut()
-                 .unwrap()
-                 .write_all(&buf));
+        try!(self.writer.as_mut().unwrap().write_all(&buf));
         Ok(())
     }
 
     fn write_frame(&mut self, frame: &[u8]) -> io::Result<usize> {
         let len = frame.len();
         if !self.partial {
-            let len_u32 = [(len >> 24) as u8, (len >> 16) as u8, (len >> 8) as u8, len as u8];
-            try!(self.writer
-                     .as_mut()
-                     .unwrap()
-                     .write_all(&len_u32));
+            let len_u32 = [
+                (len >> 24) as u8,
+                (len >> 16) as u8,
+                (len >> 8) as u8,
+                len as u8,
+            ];
+            try!(self.writer.as_mut().unwrap().write_all(&len_u32));
         }
-        let wlen = try!(self.writer
-                            .as_mut()
-                            .unwrap()
-                            .write(frame));
+        let wlen = try!(self.writer.as_mut().unwrap().write(frame));
         self.partial = wlen < len;
         Ok(wlen)
     }
