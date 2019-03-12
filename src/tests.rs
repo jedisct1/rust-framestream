@@ -1,4 +1,4 @@
-use EncoderWriter;
+use crate::EncoderWriter;
 use std::io::prelude::*;
 use std::io::BufWriter;
 

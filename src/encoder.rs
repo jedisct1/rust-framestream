@@ -1,5 +1,5 @@
+use crate::constants::*;
 use byteorder::*;
-use constants::*;
 use std::io::{self, Write};
 use std::mem;
 
@@ -15,7 +15,7 @@ impl<W: Write> Write for EncoderWriter<W> {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         if !self.started {
             self.started = true;
-            try!(self.write_control_start());
+            self.write_control_start()?;
         }
         self.write_frame(buf)
     }
@@ -37,7 +37,7 @@ impl<W: Write> EncoderWriter<W> {
 
     pub fn finish(mut self) -> io::Result<W> {
         if self.started {
-            try!(self.write_control_stop());
+            self.write_control_stop()?;
             self.started = false;
         }
         Ok(self.writer.take().unwrap())
@@ -45,7 +45,7 @@ impl<W: Write> EncoderWriter<W> {
 
     pub fn reset(&mut self, writer: W) -> io::Result<W> {
         if self.started {
-            try!(self.write_control_stop());
+            self.write_control_stop()?;
             self.started = false;
         }
         Ok(mem::replace(&mut self.writer, Some(writer)).unwrap())
@@ -74,7 +74,7 @@ impl<W: Write> EncoderWriter<W> {
             let _ = buf.write_u32::<BigEndian>(content_type.as_bytes().len() as u32);
             let _ = buf.write(content_type.as_bytes());
         }
-        try!(self.writer.as_mut().unwrap().write_all(&buf));
+        self.writer.as_mut().unwrap().write_all(&buf)?;
         Ok(())
     }
 
@@ -84,7 +84,7 @@ impl<W: Write> EncoderWriter<W> {
         let _ = buf.write_u32::<BigEndian>(0); // Escape
         let _ = buf.write_u32::<BigEndian>(total_len as u32 - 2 * 4); // Frame length
         let _ = buf.write_u32::<BigEndian>(CONTROL_STOP); // Control type
-        try!(self.writer.as_mut().unwrap().write_all(&buf));
+        self.writer.as_mut().unwrap().write_all(&buf)?;
         Ok(())
     }
 
@@ -97,9 +97,9 @@ impl<W: Write> EncoderWriter<W> {
                 (len >> 8) as u8,
                 len as u8,
             ];
-            try!(self.writer.as_mut().unwrap().write_all(&len_u32));
+            self.writer.as_mut().unwrap().write_all(&len_u32)?;
         }
-        let wlen = try!(self.writer.as_mut().unwrap().write(frame));
+        let wlen = self.writer.as_mut().unwrap().write(frame)?;
         self.partial = wlen < len;
         Ok(wlen)
     }
