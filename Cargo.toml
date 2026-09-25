@@ -1,8 +1,9 @@
 [package]
+keywords = ["framestream", "dnstap", "dns", "streaming", "encoding"]
 name = "framestream"
 version = "0.2.5"
 authors = ["Frank Denis <github@pureftpd.org>"]
-description = "Frame Streams implementation in Rust"
+description = "Frame Streams encoder for binary data transport and dnstap DNS logging, with a standard Write interface."
 license = "ISC"
 homepage = "https://github.com/jedisct1/rust-framestream"
 repository = "https://github.com/jedisct1/rust-framestream"
