@@ -1,17 +1,17 @@
 [package]
-keywords = ["framestream", "dnstap", "dns", "streaming", "encoding"]
 name = "framestream"
-version = "0.2.5"
+version = "0.2.6"
 authors = ["Frank Denis <github@pureftpd.org>"]
 description = "Frame Streams encoder for binary data transport and dnstap DNS logging, with a standard Write interface."
+keywords = ["framestream", "dnstap", "dns", "streaming", "encoding"]
 license = "ISC"
 homepage = "https://github.com/jedisct1/rust-framestream"
 repository = "https://github.com/jedisct1/rust-framestream"
 edition = "2018"
 
 [dependencies]
-byteorder = "1.3"
-bytes = "1.0"
+byteorder = "1.5"
+bytes = "1.12"
 
 [profile.release]
 lto = true
